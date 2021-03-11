@@ -62,3 +62,9 @@ The sysupgrade
 is available at
 `openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
 and includes `curl` and the LED script.
+
+## Credit
+
+The authors of the LED script are users **asenac** and **spamcop**,
+published ad OpenWRT
+[forum](https://forum.openwrt.org/t/signal-strength-and-4g-leds-on-tp-link-mr200/65978)
