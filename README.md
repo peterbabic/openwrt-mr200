@@ -45,3 +45,20 @@ opkg update
 opkg install curl
 reboot
 ```
+
+## Custom image with built in LED signal integration
+
+```bash
+pacman -S --needed base-devel ncurses zlib gawk git gettext openssl libxslt wget unzip python
+wget https://downloads.openwrt.org/snapshots/targets/ramips/mt7620/openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz
+tar xJf openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz
+cd openwrt-imagebuilder-ramips-mt7620.Linux-x86_64
+ln -s ../files .
+make image PROFILE=tplink_archer-mr200 PACKAGES="curl" FILES=files/
+```
+
+The sysupgrade
+[file](./openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin)
+is available at
+`openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
+and includes `curl` and the LED script.
