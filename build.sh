@@ -5,7 +5,6 @@ dlUrl="https://downloads.openwrt.org/snapshots/targets/ramips/mt7620"
 folderName="openwrt-imagebuilder-ramips-mt7620.Linux-x86_64"
 sumsFile="sha256sums"
 ascFile="$sumsFile.asc"
-outDir="bin"
 
 sudo pacman -q -S --needed base-devel ncurses zlib gawk git gettext openssl libxslt wget unzip python gnupg
 
@@ -43,11 +42,11 @@ else
 	tar xJf "$archive"
 fi
 
-mkdir -p "$outDir"
 cd "$folderName"
 ln -s ../files .
 make image PROFILE=tplink_archer-mr200 PACKAGES="curl" FILES=files/
-cp ./bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin "../$outDir/ArcherC2V1_tp_recovery.bin"
+cd ..
+ln -s "$folderName/bin/targets/ramips/mt7620/" .
 
 
 
