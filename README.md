@@ -45,8 +45,8 @@ sudo systemctl start atftpd.service
 
 ## Revert to TP-Link stock firmware
 
-**Important:** Always revert back to the same version in which you switched
-from.
+**Important:** Always revert back to the same stock firmware version which
+was used to prepare the recovery image.
 
 ```bash
 cd firmware
