@@ -2,9 +2,21 @@
 
 **Follow all steps at own risk!**
 
-Before downloading anything, consider reading the blog post:
+Before downloading/running anything, consider reading the blog post:
 
 <https://peterbabic.dev/blog/how-verify-openwrt-integrity-files>
+
+The build is automated in a [script](./make.sh). Change the release
+`version` at the top. Running does the following:
+
+1. Downloads the sha256sums file and verifies it's GPG signature
+1. Verifies the signature's GPG fingerprint against the published
+1. Downloads the imagebuilder for the release
+1. Verifies the integrity of the imagebuilder with SHA256 checksum
+1. Adds signal LED script into the build
+1. Builds the image
+1. Creates the recovery image suitable for a fresh device
+1. Starts the TFTP server, so the revocery image can be uploaded
 
 ## Recovery image preparation
 
@@ -25,9 +37,8 @@ TFTP. Citing the MR200 OpenWRT
 Manual recovery image preparation:
 
 ```bash
-cd firmware
-dd bs=512 obs=512 skip=1 count=256 if=Archer\ MR200v1_0.9.1_1.2_up_boot_v004a.0\ Build\ 180502\ Rel.53881n.bin of=ArcherMR200_bootloader.bin
-cat ArcherMR200_bootloader.bin openwrt-19.07.6-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin > ArcherC2V1_tp_recovery.bin
+dd bs=512 obs=512 skip=1 count=256 if=stock_firmware.bin of=ArcherMR200_bootloader.bin
+cat ArcherMR200_bootloader.bin openwrt-sysupgrade.bin > ArcherC2V1_tp_recovery.bin
 ```
 
 Manual recovery image upload using TFTP:
@@ -35,7 +46,7 @@ Manual recovery image upload using TFTP:
 ```bash
 sudo pacman -S atftp
 sudo mkdir -p /srv/atftp
-sudo cp firmware/ArcherC2V1_tp_recovery.bin /srv/atftp
+sudo cp ArcherC2V1_tp_recovery.bin /srv/atftp
 sudo chown -R atftp:atftp /srv/atftp
 sudo ifconfig enp0s31f6 192.168.0.66/23
 sudo systemctl start atftpd.service
@@ -47,6 +58,15 @@ sudo systemctl start atftpd.service
 
 **Important:** Always revert back to the same stock firmware version which
 was used to prepare the recovery image.
+
+To avoid the possibility that the firmware file will be un-published fro
+mthe vendor, it is stored is stored in the [firmware](./firmware) folder in
+this repository. There is also an `extracted_firmware.bin` created out of
+this stock firmware, should the ned to revert back be required (for
+instance to install newer firmware released by the vendor, that would
+update the 4G router firmware as well - something OpenWRT cannot do).
+
+Manual steps to revert to stock from OpenWRT:
 
 ```bash
 cd firmware
@@ -72,7 +92,8 @@ reboot
 
 ## Custom image with built in LED signal integration
 
-Manual custom image build steps:
+Manual steps for building a custom image (daily snapshots used here, not a
+release):
 
 ```bash
 pacman -S --needed base-devel ncurses zlib gawk git gettext openssl libxslt wget unzip python
@@ -83,15 +104,12 @@ ln -s ../files .
 make image PROFILE=tplink_archer-mr200 PACKAGES="curl" FILES=files/
 ```
 
-The sysupgrade file is available at
+The sysupgrade file is then available at
 `openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
 after the build and includes `curl` and the LED script.
-
-Alternatively, the steps are automated in a [script](./make.sh). After
-running, the custom image file is conveniently symlinked to `mt7620`.
 
 ## Credit
 
 The authors of the LED script are users **asenac** and **spamcop**,
 published ad OpenWRT
-[forum](https://forum.openwrt.org/t/signal-strength-and-4g-leds-on-tp-link-mr200/65978)
+[forum](https://forum.openwrt.org/t/signal-strength-and-4g-leds-on-tp-link-mr200/65978).
