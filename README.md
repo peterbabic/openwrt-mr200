@@ -108,6 +108,18 @@ The sysupgrade file is then available at
 `openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
 after the build and includes `curl`, `luci` and the LED script.
 
+## Upgrading
+
+Upgrading can be done once the OpenWRT is installed in the router. Manual
+steps for a standard `sysupgrade` procedure:
+
+```bash
+scp build/openwrt-19.07.7-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin root@openwrt:/tmp
+/usr/bin/ssh root@openwrt
+cd /tmp
+sysupgrade openwrt-19.07.7-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin
+```
+
 ## Credit
 
 The authors of the LED script are users **asenac** and **spamcop**,
