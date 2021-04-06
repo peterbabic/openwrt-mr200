@@ -11,7 +11,6 @@ cd tmp/
 
 sudo pacman -q -S --needed base-devel ncurses zlib gawk git gettext openssl libxslt wget unzip python gnupg
 
-sysupgradeFile="openwrt-$version-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin"
 sumsFile="sha256sums"
 ascFile="$sumsFile.asc"
 
@@ -23,7 +22,7 @@ gpgOutput=$(gpg --status-fd 1 --auto-key-retrieve --with-fingerprint --verify "$
 if [ $? -eq 0 ]; then
 	echo "SIGNATURE VERIFIED"
 else
-	echo "SIGNATURE INVALID. Exitting."
+	echo "SIGNATURE INVALID. Exiting."
 	exit 1
 fi
 
@@ -39,37 +38,50 @@ else
 	exit 1
 fi
 
-touch -a "$sysupgradeFile"
-touch -a "$archive"
+sysupgradeFile="openwrt-$version-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin"
+
+## Note: it is possible to download a release sysupgrade file here,
+## and consecutively get sha256sums verified,
+## but it will later get replaced by `cp "bin/targets/ ...`
+# wget -nc "$dlUrl/$sysupgradeFile" -O "$sysupgradeFile"
+wget -nc "$dlUrl/$archive" -O "$archive"
+
 sha256sum --ignore-missing -c "$sumsFile" 
 
 if [ $? -eq 0 ]; then
 	echo "SHA256SUM VERIFIED"
 else
-	echo "SHA256SUM INVALID. Attempting new download."
-
-	wget "$dlUrl/$archive" -O "$archive"
-	wget "$dlUrl/$sysupgradeFile" -O "$sysupgradeFile"
-
+	echo "SHA256SUM INVALID. Exiting."
 	rm -rf "$folderName"
+	exit 1
+fi
+
+if [ ! -d "$folderName" ]; then
 	tar xJf "$archive"
-
-	sha256sum --ignore-missing -c "$sumsFile" 
-
-	if [ $? -eq 0 ]; then
-		echo "SHA256SUM VERIFIED."
-	else
-		echo "SHA256SUM INVALID. Exiting."
-		exit 1
-	fi
 fi
 
 cd "$folderName"
 ln -sf ../../files .
 make image PROFILE=ArcherMR200 PACKAGES="curl" FILES=files/
 
-imageName="openwrt-$version-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin"
-cp "bin/targets/ramips/mt7620/$imageName" ../../build/
+cp "bin/targets/ramips/mt7620/$sysupgradeFile" ../../build/
+cd ../../build/
 
-cd ../../
+bootloaderFile="ArcherMR200_bootloader.bin"
+recoveryFile="ArcherC2V1_tp_recovery.bin"
+stockFirmware="../firmware/Archer MR200v1_0.9.1_1.2_up_boot_v004a.0 Build 180502 Rel.53881n.bin"
+
+dd bs=512 obs=512 skip=1 count=256 if="$stockFirmware" of="$bootloaderFile"
+cat "$bootloaderFile" "$sysupgradeFile" > "$recoveryFile"
+
+atftpDir="/srv/atftp"
+sudo pacman -S --needed atftp
+sudo mkdir -p "$atftpDir"
+sudo cp "$recoveryFile" "$atftpDir"
+sudo chown -R atftp:atftp "$atftpDir"
+sudo ifconfig enp0s31f6 192.168.0.66/23
+sudo systemctl start atftpd.service
+
+echo "Now connect the MR200 router via LAN1 and restart it while holding WPS button."
+
  
