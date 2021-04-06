@@ -1,14 +1,17 @@
 #!/bin/bash
 
 version="19.07.7"
-
 fprintUrl="https://openwrt.org/docs/guide-user/security/signatures"
 dlUrl="https://downloads.openwrt.org/releases/$version/targets/ramips/mt7620/"
 folderName="openwrt-imagebuilder-$version-ramips-mt7620.Linux-x86_64"
-sumsFile="sha256sums"
-ascFile="$sumsFile.asc"
+
+mkdir -p tmp/ build/
+cd tmp/
 
 sudo pacman -q -S --needed base-devel ncurses zlib gawk git gettext openssl libxslt wget unzip python gnupg
+
+sumsFile="sha256sums"
+ascFile="$sumsFile.asc"
 
 rm $sumsFile*
 wget -q "$dlUrl/$sumsFile"
@@ -45,11 +48,11 @@ else
 fi
 
 cd "$folderName"
-ln -sf ../files .
+ln -sf ../../files .
 make image PROFILE=ArcherMR200 PACKAGES="curl" FILES=files/
-cd ..
-ln -sf "$folderName/bin/targets/ramips/mt7620/" .
 
+imageName="openwrt-$version-ramips-mt7620-ArcherMR200-squashfs-sysupgrade.bin"
+cp "bin/targets/ramips/mt7620/$imageName" ../../build/
 
-
-
+cd ../../
+ 
