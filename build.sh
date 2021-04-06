@@ -1,8 +1,10 @@
 #!/bin/bash
 
+version="19.07.7"
+
 fprintUrl="https://openwrt.org/docs/guide-user/security/signatures"
-dlUrl="https://downloads.openwrt.org/snapshots/targets/ramips/mt7620"
-folderName="openwrt-imagebuilder-ramips-mt7620.Linux-x86_64"
+dlUrl="https://downloads.openwrt.org/releases/$version/targets/ramips/mt7620/"
+folderName="openwrt-imagebuilder-$version-ramips-mt7620.Linux-x86_64"
 sumsFile="sha256sums"
 ascFile="$sumsFile.asc"
 
@@ -43,10 +45,10 @@ else
 fi
 
 cd "$folderName"
-ln -s ../files .
-make image PROFILE=tplink_archer-mr200 PACKAGES="curl" FILES=files/
+ln -sf ../files .
+make image PROFILE=ArcherMR200 PACKAGES="curl" FILES=files/
 cd ..
-ln -s "$folderName/bin/targets/ramips/mt7620/" .
+ln -sf "$folderName/bin/targets/ramips/mt7620/" .
 
 
 
