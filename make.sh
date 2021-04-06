@@ -62,7 +62,7 @@ fi
 
 cd "$folderName"
 ln -sf ../../files .
-make image PROFILE=ArcherMR200 PACKAGES="curl" FILES=files/
+make image PROFILE=ArcherMR200 PACKAGES="curl luci" FILES=files/
 
 cp "bin/targets/ramips/mt7620/$sysupgradeFile" ../../build/
 cd ../../build/
