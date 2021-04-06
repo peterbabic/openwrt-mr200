@@ -87,8 +87,8 @@ The sysupgrade file is available at
 `openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
 after the build and includes `curl` and the LED script.
 
-Alternatively, the steps are automated in a [build.sh](./build.sh) script.
-After running, the custom image file is conveniently symlinked to `mt7620`.
+Alternatively, the steps are automated in a [script](./make.sh). After
+running, the custom image file is conveniently symlinked to `mt7620`.
 
 ## Credit
 
