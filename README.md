@@ -101,12 +101,12 @@ wget https://downloads.openwrt.org/snapshots/targets/ramips/mt7620/openwrt-image
 tar xJf openwrt-imagebuilder-ramips-mt7620.Linux-x86_64.tar.xz
 cd openwrt-imagebuilder-ramips-mt7620.Linux-x86_64
 ln -s ../files .
-make image PROFILE=tplink_archer-mr200 PACKAGES="curl" FILES=files/
+make image PROFILE=tplink_archer-mr200 PACKAGES="curl luci" FILES=files/
 ```
 
 The sysupgrade file is then available at
 `openwrt-imagebuilder-ramips-mt7620.Linux-x86_64/bin/targets/ramips/mt7620/openwrt-ramips-mt7620-tplink_archer-mr200-squashfs-sysupgrade.bin`
-after the build and includes `curl` and the LED script.
+after the build and includes `curl`, `luci` and the LED script.
 
 ## Credit
 
