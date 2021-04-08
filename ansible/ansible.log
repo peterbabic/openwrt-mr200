@@ -1,0 +1,88 @@
+~/w/ansible-openwrt ❯❯❯ ansible-playbook -i inventory.cfg test.yml
+
+PLAY [openwrt] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+fatal: [192.168.1.1]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: peterbabic@192.168.1.1: Permission denied (publickey,password).", "unreachable": true}
+
+PLAY RECAP *********************************************************************
+192.168.1.1                : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0   
+
+~/w/ansible-openwrt ❯❯❯ fg                                                 ✘ 4 
+fg: no current job
+~/w/ansible-openwrt ❯❯❯ gf                                                 ✘ 1 
+~/w/ansible-openwrt ❯❯❯ ansible-playbook -i inventory.cfg test.yml
+[WARNING]: Found both group and host with same name: openwrt
+
+PLAY [openwrt] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: sftp transfer mechanism failed on [openwrt]. Use ANSIBLE_DEBUG=1 to
+see detailed information
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : pin defaults] ****************************************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : install recommended packages] ************************
+included: /home/peterbabic/.ansible/roles/gekmihesg.openwrt/tasks/packages.yml for openwrt
+
+TASK [gekmihesg.openwrt : check whether opkg caches need update] ***************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : get current system time] *****************************
+skipping: [openwrt]
+
+TASK [gekmihesg.openwrt : update opkg cache] ***********************************
+changed: [openwrt]
+
+TASK [gekmihesg.openwrt : check for openssl] ***********************************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : include_tasks] ***************************************
+included: /home/peterbabic/.ansible/roles/gekmihesg.openwrt/tasks/package.yml for openwrt => (item={'key': 'base64', 'value': 'coreutils-base64'})
+included: /home/peterbabic/.ansible/roles/gekmihesg.openwrt/tasks/package.yml for openwrt => (item={'key': 'md5sum', 'value': 'coreutils-md5sum'})
+included: /home/peterbabic/.ansible/roles/gekmihesg.openwrt/tasks/package.yml for openwrt => (item={'key': 'sha1sum', 'value': 'coreutils-sha1sum'})
+
+TASK [gekmihesg.openwrt : check for command base64] ****************************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : install coreutils-base64 to provide base64] **********
+changed: [openwrt]
+
+TASK [gekmihesg.openwrt : check for command md5sum] ****************************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : install coreutils-md5sum to provide md5sum] **********
+skipping: [openwrt]
+
+TASK [gekmihesg.openwrt : check for command sha1sum] ***************************
+ok: [openwrt]
+
+TASK [gekmihesg.openwrt : install coreutils-sha1sum to provide sha1sum] ********
+changed: [openwrt]
+
+TASK [gekmihesg.openwrt : avoid re-checking of packages] ***********************
+ok: [openwrt]
+
+TASK [ping] ********************************************************************
+ok: [openwrt]
+
+PLAY RECAP *********************************************************************
+openwrt                    : ok=16   changed=3    unreachable=0    failed=0    skipped=2    rescued=0    ignored=0   
+
+~/w/ansible-openwrt ❯❯❯ fg
+fg: no current job
+~/w/ansible-openwrt ❯❯❯ gf                                                 ✘ 1 
+~/w/ansible-openwrt ❯❯❯ ansible-playbook -i inventory.cfg test.yml
+
+PLAY [openwrt] *****************************************************************
+
+TASK [Gathering Facts] *********************************************************
+[WARNING]: sftp transfer mechanism failed on [openwrt]. Use ANSIBLE_DEBUG=1 to
+see detailed information
+fatal: [openwrt]: FAILED! => {"ansible_facts": {}, "changed": false, "failed_modules": {"ansible.legacy.setup": {"ansible_facts": {"discovered_interpreter_python": "/usr/bin/python"}, "failed": true, "module_stderr": "Shared connection to openwrt closed.\r\n", "module_stdout": "/bin/sh: /usr/bin/python: not found\r\n", "msg": "The module failed to execute correctly, you probably need to set the interpreter.\nSee stdout/stderr for the exact error", "rc": 127, "warnings": ["No python interpreters found for host openwrt (tried ['/usr/bin/python', 'python3.7', 'python3.6', 'python3.5', 'python2.7', 'python2.6', '/usr/libexec/platform-python', '/usr/bin/python3', 'python'])"]}}, "msg": "The following modules failed to execute: ansible.legacy.setup\n"}
+
+PLAY RECAP *********************************************************************
+openwrt                    : ok=0    changed=0    unreachable=0    failed=1    skipped=0    rescued=0    ignored=0   
+
